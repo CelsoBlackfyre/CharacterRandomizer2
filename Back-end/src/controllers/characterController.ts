@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import Character from "../models/character";
 import { validateCharacterInput } from "./validateCharacterInput";
 
+
+
 // Get all characters
 export const getCharacters = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -15,23 +17,23 @@ export const getCharacters = async (req: Request, res: Response): Promise<void> 
 
 // Create new character
 export const createCharacter = async (req: Request, res: Response): Promise<Response> => {
-    try {
-      const input = req.body;
-      const { error } = validateCharacterInput(input);
-      if (error) {
-        return res.status(400).json({ msg: "Invalid input" });
-      }
-  
-      const character = await Character.create(input);
-      return res.status(201).json({
-        message: "Character created successfully",
-        data: character,
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(400).json({ msg: "Error creating character" });
+  try {
+    const input = req.body;
+    const { error } = validateCharacterInput(input);
+    if (error) {
+      return res.status(400).json({ msg: "Invalid input", details: error.errors });
     }
-  };
+
+    const character = await Character.create(input);
+    return res.status(201).json({
+      message: "Character created successfully",
+      data: character,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ msg: "Error creating character" });
+  }
+};
 
 // Get random character
 export const getRandomCharacter = async (req: Request, res: Response): Promise<void> => {
@@ -50,3 +52,5 @@ export const getRandomCharacter = async (req: Request, res: Response): Promise<v
 const getCharactersFromDB = async () => {
   return await Character.findAll();
 };
+
+

@@ -7,23 +7,31 @@ import { connectDB } from './config/db';
 import characterRoutes from './routes/characterRoutes';
 import initModels from './models';
 
-dotenv.config();
+const main = async () => {
 
-const app = express();
+  dotenv.config();
 
-// Connect to the database
-connectDB().then(() => {
-  initModels();
-});
+  const app = express();
 
-// Middleware
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true,
-}));
-app.use(bodyParser.json());
-app.use('/api/characters', characterRoutes);
+  //Connect to the database
+   connectDB().then(() => {
+    initModels();
+   });
 
-const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  // Middleware
+  app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  }));
+  app.use(bodyParser.json());
+  app.use('/api/characters', characterRoutes);
+
+  const PORT = process.env.PORT || 5000;
+
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+main().catch(console.error)
+
+

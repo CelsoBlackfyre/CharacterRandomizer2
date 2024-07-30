@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import fetch from "cross-fetch";
 
 type Characters = {
 	name: string;
@@ -60,10 +61,12 @@ function CreateForm() {
 			setImageFile(file);
 			const reader = new FileReader();
 			reader.onload = () => {
-				setCharacter((prevCharacter) => ({
-					...prevCharacter,
-					image: reader.result as string,
-				}));
+				if (reader.result) {
+					setCharacter((prevCharacter) => ({
+						...prevCharacter,
+						image: reader.result as string,
+					}));
+				}
 			};
 			reader.readAsDataURL(file);
 		}
@@ -88,7 +91,9 @@ function CreateForm() {
 		// formData.append("traits", JSON.stringify(character.traits));
 		// formData.append("strengths", JSON.stringify(character.strengths));
 		// formData.append("weaknesses", JSON.stringify(character.weaknesses));
-		formData.append("image", character.image);
+		if (imageFile) {
+			formData.append("image", imageFile);
+		}
 		formData.append("status", character.status);
 		formData.append("birthplace", character.birthplace);
 		formData.append("nationality", character.nationality);
@@ -96,21 +101,26 @@ function CreateForm() {
 		formData.append("class", character.class);
 
 		try {
-			const response = await fetch("http://localhost:5000/api/characters", {
+			// const response = await fetch("https://localhost:5000/api/characters", {
+			// 	method: "POST",
+			// 	mode: "cors",
+			// 	body: formData,
+			// });
+
+			fetch("http://localhost:5000/api/characters", {
 				method: "POST",
 				mode: "cors",
 				body: formData,
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
+			})
+				.then((response) => response.json())
+				.then((data) => console.log(data))
+				.catch((err) => console.log(err));
 
-			if (!response.ok) {
-				throw new Error("Something went wrong. Please try again.");
-			}
+			// if (!response.ok) {
+			// 	throw new Error("Something went wrong. Please try again.");
+			// }
 
-			const data = await response.json();
-			console.log("Character created", data);
+			// const data = await response.json();
 			setCharacter({
 				name: "",
 				lastName: "",
@@ -138,9 +148,9 @@ function CreateForm() {
 			setImageFile(null);
 			setError(null);
 		} catch (error: any) {
-			setError(error.message);
+			setError(error?.message || "An unexpected error occurred");
 			console.log(error);
-			alert(`Error: ${error.message}`);
+			alert(`Error: ${error?.message || "An unexpected error occurred"}`);
 		}
 	};
 
@@ -188,7 +198,7 @@ function CreateForm() {
 						Age
 					</label>
 					<input
-						type="number"
+						type="text"
 						name="age"
 						className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
 						onChange={handleChange}

@@ -1,89 +1,142 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "../config/db";
 
-
-//Interface for Character Model
+// Interface for Character Model attributes
 interface CharacterAttributes {
   id: number;
   name: string;
   lastName: string;
-  age:number;
+  age: number;
   gender: string;
   sexualOrientation: string;
   race: string;
   skinColor: string;
-  bodyType:string;
+  bodyType: string;
   eyeColor: string;
   hairColor: string;
   height: number;
   weight: number;
-  description: string;             
-  // traits: Record<string, string>;
-  // strengths: Record<string, string>;
-  // weaknesses: Record<string, string>;
+  description: string;
   image?: string;
   status: string;
   birthplace: string;
   nationality: string;
-  occupation: string;       
+  occupation: string;
   class: string;
 }
 
-interface CharacterCreationAttributes extends Optional<CharacterAttributes,'id'> {}
+interface CharacterCreationAttributes extends Optional<CharacterAttributes, 'id'> {}
 
-class Character extends Model<CharacterAttributes, CharacterCreationAttributes> implements CharacterAttributes{
-    public id!: number;
-    public name!: string;
-    public lastName!: string;
-    public age!: number;
-    public gender!: string;
-    public sexualOrientation!: string;
-    public race!: string;
-    public skinColor!: string;
-    public bodyType!: string;
-    public eyeColor!: string;
-    public hairColor!: string;
-    public height!: number;
-    public weight!: number;
-    public description!: string;
-    // public traits!: Record<string, string>;
-    // public strengths!: Record<string, string>;
-    // public weaknesses!: Record<string, string>;
-    public image!: string;
-    public status!: string;
-    public birthplace!: string;
-    public nationality!: string;
-    public occupation!: string;
-    public class!: string;
+class Character extends Model<CharacterAttributes, CharacterCreationAttributes> implements CharacterAttributes {
+  public id!: number;
+  public name!: string;
+  public lastName!: string;
+  public age!: number;
+  public gender!: string;
+  public sexualOrientation!: string;
+  public race!: string;
+  public skinColor!: string;
+  public bodyType!: string;
+  public eyeColor!: string;
+  public hairColor!: string;
+  public height!: number;
+  public weight!: number;
+  public description!: string;
+  public image!: string;
+  public status!: string;
+  public birthplace!: string;
+  public nationality!: string;
+  public occupation!: string;
+  public class!: string;
 }
 
 Character.init({
-  id: { type: DataTypes.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, allowNull: false },
-  lastName: { type: DataTypes.STRING, allowNull: false },
-  age: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
-  gender: { type: DataTypes.STRING, allowNull: false },
-  sexualOrientation: { type: DataTypes.STRING, allowNull: false },
-  race: { type: DataTypes.STRING, allowNull: false },
-  skinColor: { type: DataTypes.STRING, allowNull: false },
-  bodyType: { type: DataTypes.STRING, allowNull: false },
-  eyeColor: { type: DataTypes.STRING, allowNull: false },
-  hairColor: { type: DataTypes.STRING, allowNull: false },
-  height: { type: DataTypes.INTEGER, allowNull: false },
-  weight: { type: DataTypes.INTEGER, allowNull: false },
-  description: { type: DataTypes.STRING, allowNull: false },
-  // traits: { type: DataTypes.JSON, allowNull: false },
-  // strengths: { type: DataTypes.JSON, allowNull: false },
-  // weaknesses: { type: DataTypes.JSON, allowNull: false },
-  image: { type: DataTypes.STRING(256), allowNull: false },
-  status: { type: DataTypes.STRING, allowNull: false },
-  birthplace: { type: DataTypes.STRING, allowNull: false },
-  nationality: { type: DataTypes.STRING, allowNull: false },
-  occupation: { type: DataTypes.STRING, allowNull: false },
-  class: { type: DataTypes.STRING, allowNull: false },
+  id: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  age: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+  },
+  gender: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  sexualOrientation: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  race: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  skinColor: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  bodyType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  eyeColor: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  hairColor: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  height: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  weight: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  image: {
+    type: DataTypes.STRING(256),
+    allowNull: true, // Changed to true to match optional attribute in interface
+  },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  birthplace: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  nationality: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  occupation: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  class: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 }, {
   sequelize,
   tableName: 'characters',
-})
+  timestamps: true, // Add timestamps if you want createdAt and updatedAt fields
+  underscored: true, // Use underscored option for snake_case column names
+});
 
-export default Character
+export default Character;

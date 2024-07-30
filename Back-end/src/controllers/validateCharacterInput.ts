@@ -1,27 +1,38 @@
-import Joi from "joi";
+import { z } from 'zod';
 
-const characterSchema = Joi.object({
-  name: Joi.string().required(),
-  lastName: Joi.string().required(),
-  age: Joi.number().integer().required(),
-  gender: Joi.string().valid("male", "female", "non-binary").required(),
-  sexualOrientation: Joi.string().valid("heterosexual", "homosexual", "bisexual", "asexual").required(),
-  race: Joi.string().required(),
-  skinColor: Joi.string().required(),
-  bodyType: Joi.string().required(),
-  eyeColor: Joi.string().required(),
-  hairColor: Joi.string().required(),
-  height: Joi.number().required(),
-  weight: Joi.number().required(),
-  description: Joi.string().required(),
-  image: Joi.string().uri().required(),
-  status: Joi.string().valid("active", "inactive").required(),
-  birthplace: Joi.string().required(),
-  nationality: Joi.string().required(),
-  occupation: Joi.string().required(),
-  class: Joi.string().required(),
+// Define the schema using Zod
+const characterSchema = z.object({
+  name: z.string().nonempty({ message: "Name is required" }),
+  lastName: z.string().nonempty({ message: "Last name is required" }),
+  age: z.number().int().min(0, { message: "Age must be a non-negative integer" }),
+  gender: z.string().nonempty({ message: "Gender is required" }),
+  sexualOrientation: z.string().nonempty({ message: "Sexual orientation is required" }),
+  race: z.string().nonempty({ message: "Race is required" }),
+  skinColor: z.string().nonempty({ message: "Skin color is required" }),
+  bodyType: z.string().nonempty({ message: "Body type is required" }),
+  eyeColor: z.string().nonempty({ message: "Eye color is required" }),
+  hairColor: z.string().nonempty({ message: "Hair color is required" }),
+  height: z.number().int().min(0, { message: "Height must be a non-negative integer" }),
+  weight: z.number().int().min(0, { message: "Weight must be a non-negative integer" }),
+  description: z.string().nonempty({ message: "Description is required" }),
+  image: z.string().optional(),
+  status: z.string().nonempty({ message: "Status is required" }),
+  birthplace: z.string().nonempty({ message: "Birthplace is required" }),
+  nationality: z.string().nonempty({ message: "Nationality is required" }),
+  occupation: z.string().nonempty({ message: "Occupation is required" }),
+  class: z.string().nonempty({ message: "Class is required" }),
 });
 
-export const validateCharacterInput = (input: any) => {
-  return characterSchema.validate(input);
+// Validation function
+export const validateCharacterInput = (input: unknown) => {
+  try {
+    characterSchema.parse(input);
+    return { error: null };
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      return { error: e };
+    } else {
+      throw e;
+    }
+  }
 };
