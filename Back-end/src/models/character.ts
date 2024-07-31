@@ -136,7 +136,6 @@ Character.init({
   sequelize,
   tableName: 'characters',
   timestamps: true, // Add timestamps if you want createdAt and updatedAt fields
-  underscored: true, // Use underscored option for snake_case column names
 });
 
 export default Character;

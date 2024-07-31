@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import Character from "../models/character";
 import { validateCharacterInput } from "./validateCharacterInput";
 
-
-
 // Get all characters
 export const getCharacters = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -19,9 +17,10 @@ export const getCharacters = async (req: Request, res: Response): Promise<void> 
 export const createCharacter = async (req: Request, res: Response): Promise<Response> => {
   try {
     const input = req.body;
-    const { error } = validateCharacterInput(input);
+    const { error } = await validateCharacterInput(input); // Await the validation function
+
     if (error) {
-      return res.status(400).json({ msg: "Invalid input", details: error.errors });
+      return res.status(400).json({ msg: "Invalid input", details: error });
     }
 
     const character = await Character.create(input);
@@ -52,5 +51,3 @@ export const getRandomCharacter = async (req: Request, res: Response): Promise<v
 const getCharactersFromDB = async () => {
   return await Character.findAll();
 };
-
-

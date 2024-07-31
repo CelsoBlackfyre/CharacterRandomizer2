@@ -1,38 +1,44 @@
-import { z } from 'zod';
+import * as Yup from 'yup';
 
-// Define the schema using Zod
-const characterSchema = z.object({
-  name: z.string().nonempty({ message: "Name is required" }),
-  lastName: z.string().nonempty({ message: "Last name is required" }),
-  age: z.number().int().min(0, { message: "Age must be a non-negative integer" }),
-  gender: z.string().nonempty({ message: "Gender is required" }),
-  sexualOrientation: z.string().nonempty({ message: "Sexual orientation is required" }),
-  race: z.string().nonempty({ message: "Race is required" }),
-  skinColor: z.string().nonempty({ message: "Skin color is required" }),
-  bodyType: z.string().nonempty({ message: "Body type is required" }),
-  eyeColor: z.string().nonempty({ message: "Eye color is required" }),
-  hairColor: z.string().nonempty({ message: "Hair color is required" }),
-  height: z.number().int().min(0, { message: "Height must be a non-negative integer" }),
-  weight: z.number().int().min(0, { message: "Weight must be a non-negative integer" }),
-  description: z.string().nonempty({ message: "Description is required" }),
-  image: z.string().optional(),
-  status: z.string().nonempty({ message: "Status is required" }),
-  birthplace: z.string().nonempty({ message: "Birthplace is required" }),
-  nationality: z.string().nonempty({ message: "Nationality is required" }),
-  occupation: z.string().nonempty({ message: "Occupation is required" }),
-  class: z.string().nonempty({ message: "Class is required" }),
+// Define the schema using Yup
+const characterSchema = Yup.object({
+  name: Yup.string().required('Name is required'),
+  lastName: Yup.string().required('Last name is required'),
+  age: Yup.number().integer('Age must be an integer').min(0, 'Age must be a non-negative integer').required('Age is required'),
+  gender: Yup.string().required('Gender is required'),
+  sexualOrientation: Yup.string().required('Sexual orientation is required'),
+  race: Yup.string().required('Race is required'),
+  skinColor: Yup.string().required('Skin color is required'),
+  bodyType: Yup.string().required('Body type is required'),
+  eyeColor: Yup.string().required('Eye color is required'),
+  hairColor: Yup.string().required('Hair color is required'),
+  height: Yup.number().integer('Height must be an integer').min(0, 'Height must be a non-negative integer').required('Height is required'),
+  weight: Yup.number().integer('Weight must be an integer').min(0, 'Weight must be a non-negative integer').required('Weight is required'),
+  description: Yup.string().required('Description is required'),
+  image: Yup.string().optional(),
+  status: Yup.string().required('Status is required'),
+  birthplace: Yup.string().required('Birthplace is required'),
+  nationality: Yup.string().required('Nationality is required'),
+  occupation: Yup.string().required('Occupation is required'),
+  class: Yup.string().required('Class is required'),
 });
 
 // Validation function
-export const validateCharacterInput = (input: unknown) => {
+type ValidationResult = {
+  error: string[] | null;
+};
+
+export const validateCharacterInput = async (input: unknown): Promise<ValidationResult> => {
   try {
-    characterSchema.parse(input);
+    await characterSchema.validate(input, { abortEarly: false });
     return { error: null };
   } catch (e) {
-    if (e instanceof z.ZodError) {
-      return { error: e };
+    if (e instanceof Yup.ValidationError) {
+      console.error('Validation errors:', e.errors);
+      return { error: e.errors };
     } else {
-      throw e;
+      console.error('Unexpected error:', e);
+      return { error: ['Unexpected validation error'] };
     }
   }
 };

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import fetch from "cross-fetch";
+import axios from "axios";
 
 type Characters = {
 	name: string;
@@ -53,7 +54,7 @@ function CreateForm() {
 	});
 
 	const [imageFile, setImageFile] = useState<File | null>(null);
-	const [error, setError] = useState<string | null>(null);
+	const [error, setError] = useState(null);
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -74,89 +75,62 @@ function CreateForm() {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const formData = new FormData();
-		formData.append("name", character.name);
-		formData.append("lastName", character.lastName);
-		formData.append("age", character.age.toString());
-		formData.append("gender", character.gender);
-		formData.append("sexualOrientation", character.sexualOrientation);
-		formData.append("race", character.race);
-		formData.append("skinColor", character.skinColor);
-		formData.append("bodyType", character.bodyType);
-		formData.append("eyeColor", character.eyeColor);
-		formData.append("hairColor", character.hairColor);
-		formData.append("height", character.height.toString());
-		formData.append("weight", character.weight.toString());
-		formData.append("description", character.description);
-		// formData.append("traits", JSON.stringify(character.traits));
-		// formData.append("strengths", JSON.stringify(character.strengths));
-		// formData.append("weaknesses", JSON.stringify(character.weaknesses));
-		if (imageFile) {
-			formData.append("image", imageFile);
-		}
-		formData.append("status", character.status);
-		formData.append("birthplace", character.birthplace);
-		formData.append("nationality", character.nationality);
-		formData.append("occupation", character.occupation);
-		formData.append("class", character.class);
+
+		const characterData = {
+			...character,
+			image: imageFile ? await toBase64(imageFile) : null,
+		};
 
 		try {
-			// const response = await fetch("https://localhost:5000/api/characters", {
-			// 	method: "POST",
-			// 	mode: "cors",
-			// 	body: formData,
-			// });
-
-			fetch("http://localhost:5000/api/characters", {
+			const response = await fetch("http://localhost:3000/api/characters", {
 				method: "POST",
-				mode: "cors",
-				body: formData,
-			})
-				.then((response) => response.json())
-				.then((data) => console.log(data))
-				.catch((err) => console.log(err));
-
-			// if (!response.ok) {
-			// 	throw new Error("Something went wrong. Please try again.");
-			// }
-
-			// const data = await response.json();
-			setCharacter({
-				name: "",
-				lastName: "",
-				age: 0,
-				gender: "",
-				sexualOrientation: "",
-				race: "",
-				skinColor: "",
-				bodyType: "",
-				eyeColor: "",
-				hairColor: "",
-				height: 0,
-				weight: 0,
-				description: "",
-				// traits: "",
-				// strengths: "",
-				// weaknesses: "",
-				image: "",
-				status: "",
-				birthplace: "",
-				nationality: "",
-				occupation: "",
-				class: "",
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+				body: JSON.stringify(characterData),
 			});
-			setImageFile(null);
-			setError(null);
-		} catch (error: any) {
-			setError(error?.message || "An unexpected error occurred");
-			console.log(error);
-			alert(`Error: ${error?.message || "An unexpected error occurred"}`);
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+		} catch (error) {
+			console.log("error.response", error.response);
+			setError(getResponseError(error));
 		}
 	};
+
+	const toBase64 = (file: File) =>
+		new Promise<string>((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () =>
+				resolve(reader.result?.toString().split(",")[1] || "");
+			reader.onerror = (error) => reject(error);
+		});
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
 		setCharacter((prevCharacter) => ({ ...prevCharacter, [name]: value }));
+	};
+
+	const getResponseError = (error: any) => {
+		if (error === null || error === undefined) {
+			return null;
+		}
+
+		if (error.response) {
+			if (error.response.status === 400 && error.response.data) {
+				const responseErrors = error.response.data.errors;
+				if (responseErrors) {
+					const errorData = {};
+					for (const errorItem of responseErrors) {
+						errorData[errorItem.field] = errorItem.defaultMessage;
+					}
+					return errorData;
+				}
+				return null;
+			}
+		}
 	};
 
 	return (
