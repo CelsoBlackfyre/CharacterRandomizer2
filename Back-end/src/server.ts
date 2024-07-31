@@ -28,7 +28,7 @@ const main = async () => {
   app.use('/api/characters', characterRoutes);
   app.use(express.json());
 
-  const PORT = process.env.PORT || 5000;
+  const PORT = process.env.PORT || 5080;
   
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }

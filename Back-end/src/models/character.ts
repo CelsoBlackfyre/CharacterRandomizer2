@@ -136,6 +136,7 @@ Character.init({
   sequelize,
   tableName: 'characters',
   timestamps: true, // Add timestamps if you want createdAt and updatedAt fields
+  
 });
 
 export default Character;

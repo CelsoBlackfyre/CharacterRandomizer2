@@ -82,7 +82,7 @@ function CreateForm() {
 		};
 
 		try {
-			const response = await fetch("http://localhost:3000/api/characters", {
+			const response = await fetch("http://localhost:5000/api/characters", {
 				method: "POST",
 				headers: {
 					"Content-Type": "multipart/form-data",
