@@ -17,13 +17,14 @@ export const getCharacters = async (req: Request, res: Response): Promise<void> 
 export const createCharacter = async (req: Request, res: Response): Promise<Response> => {
   try {
     const input = req.body;
-    const { error } = await validateCharacterInput(input); // Await the validation function
+    const image = req.file ? req.file.filename : null; // Get the uploaded file's filename
+    const { error } = await validateCharacterInput({ ...input, image }); // Include the image in the validation
 
     if (error) {
       return res.status(400).json({ msg: "Invalid input", details: error });
     }
 
-    const character = await Character.create(input);
+    const character = await Character.create({ ...input, image });
     return res.status(201).json({
       message: "Character created successfully",
       data: character,
