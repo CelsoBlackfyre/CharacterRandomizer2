@@ -17,8 +17,8 @@ const main = async () => {
   await connectDB();
   initModels();
 
-  // Ensure the uploads directory exists
-  const uploadDir = path.join(__dirname, '../uploads'); // Adjusted to ensure it’s one level up
+ 
+  const uploadDir = path.join(__dirname, '../uploads'); 
   if (!fs.existsSync(uploadDir)) {
     try {
       fs.mkdirSync(uploadDir, { recursive: true });

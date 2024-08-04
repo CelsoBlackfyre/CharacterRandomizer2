@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-// Define the schema using Yup
+
 const characterSchema = Yup.object({
   name: Yup.string().required('Name is required'),
   lastName: Yup.string().required('Last name is required'),

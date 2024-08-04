@@ -110,7 +110,7 @@ Character.init({
   },
   image: {
     type: DataTypes.STRING(256),
-    allowNull: true, // Changed to true to match optional attribute in interface
+    allowNull: true, 
   },
   status: {
     type: DataTypes.STRING,
@@ -135,7 +135,7 @@ Character.init({
 }, {
   sequelize,
   tableName: 'characters',
-  timestamps: true, // Add timestamps if you want createdAt and updatedAt fields
+  timestamps: true, 
   
 });
 

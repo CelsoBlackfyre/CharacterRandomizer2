@@ -4,7 +4,7 @@ export const data = [
 		id: 1,
 		name: "White",
 		lastName: "Queen",
-		age: 0, // Add actual values or remove if not applicable
+		age: 0,
 		gender: "Female",
 		sexualOrientation: "Unknown",
 		race: "Unknown",
@@ -12,8 +12,8 @@ export const data = [
 		bodyType: "Unknown",
 		eyeColor: "Unknown",
 		hairColor: "Unknown",
-		height: 0, // Add actual values or remove if not applicable
-		weight: 0, // Add actual values or remove if not applicable
+		height: 0,
+		weight: 0,
 		description:
 			"Queen of the Lands of Shadow beyond the clouds, she is the most powerful and powerful woman in the Lands of Shadow. She is the only Queen in the Lands of Shadow.",
 		image: "/src/assets/WhiteQueen.jpeg",
